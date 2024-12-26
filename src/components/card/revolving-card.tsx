@@ -28,6 +28,8 @@ export function RevolvingCards({
   radius ??= Math.max(window.innerWidth / 5, 300) // Radius of the carousel
   const revolvingDuration = shouldRevolve ? 4 : 0 // Total duration for the revolving animation
   const minimumRotations = 2
+  const anglePerCard = 360 / totalCards
+  const targetRotation = minimumRotations * 360 + stopNumber * anglePerCard
 
   return (
     <motion.div
@@ -35,12 +37,6 @@ export function RevolvingCards({
       style={{
         transformStyle: 'preserve-3d',
         transformOrigin: 'center center',
-      }}
-      animate={{
-        opacity: [0, 1],
-      }}
-      transition={{
-        duration: 0.2,
       }}
     >
       <div
@@ -57,7 +53,7 @@ export function RevolvingCards({
           transformOrigin: 'center center',
         }}
         animate={{
-          rotateY: [minimumRotations * 360, (stopNumber / totalCards) * 360 - minimumRotations * 360],
+          rotateY: [minimumRotations * 360, -targetRotation],
         }}
         onAnimationComplete={onRevolvingComplete}
         transition={{

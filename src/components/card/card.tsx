@@ -10,15 +10,16 @@ export interface CardType {
 }
 
 type Props = {
-  ref: React.RefObject<HTMLDivElement>
+  ref: React.RefObject<HTMLDivElement> | null
   className?: string
   front: React.ReactNode
   back?: React.ReactNode
   rotateY: string
   translateZ: string
+  isShown?: boolean
 }
 
-export function Card({ ref, className, front, back, rotateY, translateZ }: Props) {
+export function Card({ ref, className, front, back, rotateY, translateZ, isShown }: Props) {
   const [bounds, setBounds] = useState({ x: 0, y: 0, width: 0, height: 0 })
   const [center, setCenter] = useState({ x: 0, y: 0 })
   const distance = Math.sqrt(center.x ** 2 + center.y ** 2)
@@ -43,7 +44,7 @@ export function Card({ ref, className, front, back, rotateY, translateZ }: Props
       ref={ref}
       className='absolute transition-transform duration-300 ease-out hover:duration-150'
       style={{
-        transform: `${rotateY} ${translateZ} ${
+        transform: `${rotateY} ${!isShown ? 'translateZ(0px) scale(0)' : translateZ} ${
           center && distance && hovering.value
             ? `rotate3d(
             ${center.y / 100},
@@ -53,17 +54,22 @@ export function Card({ ref, className, front, back, rotateY, translateZ }: Props
           )`
             : ''
         }`,
-        transformStyle: 'preserve-3d', // Maintain 3D transformations
+        transformStyle: 'preserve-3d',
       }}
       onMouseEnter={e => {
-        hovering.setTrue()
-        setBounds(ref.current!.getBoundingClientRect())
-        ref.current?.addEventListener('mousemove', rotateToMouse)
+        if (ref) {
+          hovering.setTrue()
+          setBounds(ref.current!.getBoundingClientRect())
+          ref.current?.addEventListener('mousemove', rotateToMouse)
+        }
       }}
       onMouseLeave={() => {
-        ref.current?.removeEventListener('mousemove', rotateToMouse)
-        hovering.setFalse()
+        if (ref) {
+          ref.current?.removeEventListener('mousemove', rotateToMouse)
+          hovering.setFalse()
+        }
       }}
+      onClick={() => flipped.toggle()}
     >
       <motion.div
         className={cn('relative', className)}
@@ -72,15 +78,14 @@ export function Card({ ref, className, front, back, rotateY, translateZ }: Props
           rotateY: flipped.value ? 180 : 0,
         }}
         transition={{
-          duration: 1, // Duration for the flip animation
-          ease: 'easeOut', // Easing for the flip
+          duration: 1,
+          ease: 'easeOut',
           rotateY: {
             type: 'spring',
             stiffness: 400,
             damping: 40,
           },
         }}
-        onClick={() => flipped.toggle()}
       >
         {/* Front Face */}
         <CardFace>{front}</CardFace>

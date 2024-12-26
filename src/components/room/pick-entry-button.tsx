@@ -6,9 +6,9 @@ import { toast } from 'sonner'
 
 import { pickEntry, Room } from '@/app/actions'
 import { Session } from '@/lib/auth'
-import { findPickedEntry, isActionError, userIsInRoom } from '@/lib/utils'
+import { cn, findPickedEntry, isActionError, userIsInRoom } from '@/lib/utils'
 
-import { startTransition, useRef } from 'react'
+import { useRef } from 'react'
 import { useBoolean, useOnClickOutside } from 'usehooks-ts'
 import { Card } from '../card/card'
 import { RevolvingCards } from '../card/revolving-card'
@@ -29,13 +29,7 @@ export function PickEntryButton({ session, room }: Props) {
   const cardsRef = useRef(null as unknown as HTMLDivElement)
   const showNotes = useBoolean(false)
 
-  useOnClickOutside(cardsRef, handleClickOutside)
-
-  function handleClickOutside() {
-    startTransition(() => {
-      open.setFalse()
-    })
-  }
+  useOnClickOutside(cardsRef, () => open.setFalse())
 
   async function action() {
     if (pickedEntry) {
@@ -52,6 +46,11 @@ export function PickEntryButton({ session, room }: Props) {
     }
 
     open.setTrue()
+  }
+
+  function handleRotationComplete() {
+    showNotes.setTrue()
+    firstPick.setFalse()
   }
 
   if (!room.closedAt || !session || !userIsInRoom(room, session.user.id)) {
@@ -73,7 +72,7 @@ export function PickEntryButton({ session, room }: Props) {
           stopNumber={room.entries.findIndex(e => e.id === pickedEntry?.id)}
           totalCards={room.entries.length}
           shouldRevolve={firstPick.value}
-          onRevolvingComplete={() => showNotes.setTrue()}
+          onRevolvingComplete={handleRotationComplete}
         >
           {radius =>
             room.entries.map((card, index) => {
@@ -85,21 +84,34 @@ export function PickEntryButton({ session, room }: Props) {
                 <Card
                   className='window h-64 w-52'
                   key={index}
-                  ref={cardsRef}
+                  ref={card.id === pickedEntry?.id ? cardsRef : null}
+                  isShown={firstPick.value || card.id === pickedEntry?.id}
                   front={
                     <div className='flex h-full w-full flex-col p-4'>
-                      <span>Your pick is</span>
+                      <span
+                        className={cn('opacity-0 transition-opacity', {
+                          'opacity-80': showNotes.value && card.id === pickedEntry?.id,
+                        })}
+                      >
+                        Your pick is
+                      </span>
                       <div className='flex h-full flex-col items-center justify-center gap-2'>
                         <Avatar className='size-20'>
                           <AvatarImage src={card.user.image!} />
                         </Avatar>
                         <span>{card.user.name}</span>
                       </div>
-                      <small className='text-[10px] opacity-80'>Click to flip card and see notes</small>
+                      <small
+                        className={cn('text-[10px] opacity-0 transition-opacity', {
+                          'opacity-80': showNotes.value && card.id === pickedEntry?.id,
+                        })}
+                      >
+                        Click to flip card and see notes
+                      </small>
                     </div>
                   }
                   back={
-                    <div className='flex h-full w-full flex-col items-center justify-center'>
+                    <div className='flex h-full w-full flex-col items-center'>
                       <Show when={showNotes.value && card.id === pickedEntry?.id}>
                         <div className='flex flex-col items-center p-2'>
                           <span>Notes</span>
