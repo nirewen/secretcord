@@ -8,11 +8,14 @@ import { pickEntry, Room } from '@/app/actions'
 import { Session } from '@/lib/auth'
 import { findPickedEntry, isActionError, userIsInRoom } from '@/lib/utils'
 
-import { useBoolean } from 'usehooks-ts'
+import { startTransition, useRef } from 'react'
+import { useBoolean, useOnClickOutside } from 'usehooks-ts'
+import { Card } from '../card/card'
+import { RevolvingCards } from '../card/revolving-card'
 import { CardPickupIcon } from '../icons/CardPickupIcon'
+import { Avatar, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog'
-import { PickedEntry } from './picked-entry'
+import { Notes } from './notes'
 
 type Props = {
   session: Session
@@ -21,10 +24,22 @@ type Props = {
 
 export function PickEntryButton({ session, room }: Props) {
   const open = useBoolean(false)
+  const firstPick = useBoolean(true)
   const pickedEntry = findPickedEntry(room.entries, session?.user.id)
+  const cardsRef = useRef(null as unknown as HTMLDivElement)
+  const showNotes = useBoolean(false)
+
+  useOnClickOutside(cardsRef, handleClickOutside)
+
+  function handleClickOutside() {
+    startTransition(() => {
+      open.setFalse()
+    })
+  }
 
   async function action() {
     if (pickedEntry) {
+      firstPick.setFalse()
       open.setTrue()
 
       return
@@ -44,7 +59,7 @@ export function PickEntryButton({ session, room }: Props) {
   }
 
   return (
-    <Dialog open={open.value} onOpenChange={open.toggle}>
+    <>
       <Button variant='default' onClick={action}>
         <Show when={!!pickedEntry}>
           <UserCircle2Icon /> View picked entry
@@ -53,19 +68,55 @@ export function PickEntryButton({ session, room }: Props) {
           <CardPickupIcon /> Pick entry
         </Show>
       </Button>
-      <Show when={!!pickedEntry}>
-        <DialogContent className='sm:max-w-[425px]'>
-          <DialogHeader>
-            <DialogTitle>You picked...</DialogTitle>
-          </DialogHeader>
-          <PickedEntry pickedEntry={pickedEntry!} />
-          <DialogDescription>
-            Follow the instructions in the notes of the room
-            <br />
-            and this user's notes to give them their gift
-          </DialogDescription>
-        </DialogContent>
+      <Show when={open.value && !!pickedEntry}>
+        <RevolvingCards
+          stopNumber={room.entries.findIndex(e => e.id === pickedEntry?.id)}
+          totalCards={room.entries.length}
+          shouldRevolve={firstPick.value}
+          onRevolvingComplete={() => showNotes.setTrue()}
+        >
+          {radius =>
+            room.entries.map((card, index) => {
+              const angle = (index / room.entries.length) * 360
+              const rotateY = `rotateY(${angle}deg)`
+              const translateZ = `translateZ(${radius}px)`
+
+              return (
+                <Card
+                  className='window h-64 w-52'
+                  key={index}
+                  ref={cardsRef}
+                  front={
+                    <div className='flex h-full w-full flex-col p-4'>
+                      <span>Your pick is</span>
+                      <div className='flex h-full flex-col items-center justify-center gap-2'>
+                        <Avatar className='size-20'>
+                          <AvatarImage src={card.user.image!} />
+                        </Avatar>
+                        <span>{card.user.name}</span>
+                      </div>
+                      <small className='text-[10px] opacity-80'>Click to flip card and see notes</small>
+                    </div>
+                  }
+                  back={
+                    <div className='flex h-full w-full flex-col items-center justify-center'>
+                      <Show when={showNotes.value && card.id === pickedEntry?.id}>
+                        <div className='flex flex-col items-center p-2'>
+                          <span>Notes</span>
+                          <small className='text-[10px] opacity-80'>These are notes on how to give your gift</small>
+                        </div>
+                        <Notes className='w-full border-none bg-transparent' markdown={card.notes} />
+                      </Show>
+                    </div>
+                  }
+                  rotateY={rotateY}
+                  translateZ={translateZ}
+                />
+              )
+            })
+          }
+        </RevolvingCards>
       </Show>
-    </Dialog>
+    </>
   )
 }

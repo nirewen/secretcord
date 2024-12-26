@@ -68,6 +68,9 @@ dependencies:
   react-markdown:
     specifier: ^9.0.1
     version: 9.0.1(@types/react@19.0.2)(react@19.0.0)
+  react-markdown-autolink:
+    specifier: ^0.0.2
+    version: 0.0.2
   sonner:
     specifier: ^1.7.1
     version: 1.7.1(react-dom@19.0.0)(react@19.0.0)
@@ -2380,6 +2383,10 @@ packages:
       react: ^16.8.0 || ^17 || ^18 || ^19
     dependencies:
       react: 19.0.0
+    dev: false
+
+  /react-markdown-autolink@0.0.2:
+    resolution: {integrity: sha512-j73lQij4KvsKq0T+HgGC/dmgqz9k/FbyD/J1x537crtGethGNYKhfQlBCUkRVkR3boB+0p5KcpCXKQs1OLue6A==}
     dev: false
 
   /react-markdown@9.0.1(@types/react@19.0.2)(react@19.0.0):

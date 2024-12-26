@@ -1,35 +1,31 @@
-import { prisma } from '@/prisma'
 import { Users2Icon } from 'lucide-react'
-import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { For, Show } from 'react-flow-control'
 
+import { fetchRoom, getSession } from '@/app/actions'
 import { JoinRoom } from '@/components/room/join-room'
 import { Notes } from '@/components/room/notes'
 import { PickEntryButton } from '@/components/room/pick-entry-button'
 import { RoomOptions } from '@/components/room/room-options'
 import { User } from '@/components/user'
-import { auth } from '@/lib/auth'
+import { isActionError } from '@/lib/utils'
 
 export default async function RoomPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const room = await prisma.room.findUnique({
-    where: { id },
-    include: {
-      creator: true,
-      entries: {
-        include: { user: true },
-      },
-    },
-  })
+  const roomResult = await fetchRoom(id)
+
+  if (isActionError(roomResult)) {
+    notFound()
+  }
+
+  const room = roomResult.data
 
   if (!room) {
     notFound()
   }
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const sessionResult = await getSession()
+  const session = isActionError(sessionResult) ? null : sessionResult.data
 
   return (
     <div className='window flex h-full w-full flex-col gap-2 overflow-hidden p-2'>
@@ -45,7 +41,7 @@ export default async function RoomPage({ params }: { params: Promise<{ id: strin
         </div>
       </div>
       <Show when={!!room.notes}>
-        <Notes markdown={room.notes} />
+        <Notes className='max-h-48' markdown={room.notes} />
       </Show>
       <div className='grid grid-cols-[1fr_4fr] gap-2'>
         <div className='flex items-center justify-center gap-2 rounded-md bg-neutral-800'>
