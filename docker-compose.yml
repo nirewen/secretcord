@@ -1,0 +1,20 @@
+services:
+  secretcord:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - proxy
+    volumes:
+      - ./prisma:/app/prisma
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.secretcord.rule=Host(`sc.nirewen.dev`)
+      - traefik.http.routers.secretcord.entrypoints=https
+      - traefik.http.routers.secretcord.tls=true
+      - traefik.http.services.secretcord.loadbalancer.server.port=3000
+      - traefik.docker.network=proxy
+
+networks:
+  proxy:
+    external: true
