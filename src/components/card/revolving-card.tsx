@@ -25,7 +25,7 @@ export function RevolvingCards({
   onRevolvingComplete,
   children,
 }: RevolvingCardsProps) {
-  radius ??= Math.max(window.innerWidth / 5, 300) // Radius of the carousel
+  radius ??= Math.max(window.innerWidth / 4, 300) // Radius of the carousel
   const revolvingDuration = shouldRevolve ? 4 : 0 // Total duration for the revolving animation
   const minimumRotations = 2
   const anglePerCard = 360 / totalCards

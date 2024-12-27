@@ -83,7 +83,7 @@ export function PickEntryButton({ session, room }: Props) {
 
               return (
                 <Card
-                  className='window h-64 w-52'
+                  className='window h-72 w-52'
                   key={index}
                   ref={card.id === pickedEntry?.id ? cardsRef : null}
                   isShown={firstPick.value || card.id === pickedEntry?.id}

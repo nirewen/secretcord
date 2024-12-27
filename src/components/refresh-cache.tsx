@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useBoolean, useInterval } from 'usehooks-ts'
+import { useBoolean } from 'usehooks-ts'
 
 export function RefreshCache({ check }: { check: () => Promise<void> }) {
   const shouldRun = useBoolean(typeof document !== 'undefined' && document.hasFocus())
@@ -24,7 +24,7 @@ export function RefreshCache({ check }: { check: () => Promise<void> }) {
     }
   })
 
-  useInterval(check, shouldRun.value ? 1000 : null)
+  // useInterval(check, shouldRun.value ? 1000 : null)
 
   return null
 }

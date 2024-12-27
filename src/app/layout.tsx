@@ -1,3 +1,4 @@
+import { BackgroundShapes } from '@/components/background-shapes'
 import { Navbar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/sonner'
 import type { Metadata } from 'next'
@@ -15,7 +16,8 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang='en' className='dark'>
-      <body className={`bg-zinc-700 antialiased`}>
+      <body className={`bg-neutral-950 antialiased`}>
+        <BackgroundShapes />
         <main className='mx-auto flex h-screen max-w-md flex-col items-center justify-center gap-2 overflow-hidden py-8'>
           <Navbar />
           {children}
