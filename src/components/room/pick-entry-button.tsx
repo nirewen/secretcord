@@ -8,12 +8,13 @@ import { pickEntry, Room } from '@/app/actions'
 import { Session } from '@/lib/auth'
 import { cn, findPickedEntry, isActionError, userIsInRoom } from '@/lib/utils'
 
+import Image from 'next/image'
 import { useRef } from 'react'
 import { useBoolean, useOnClickOutside } from 'usehooks-ts'
 import { Card } from '../card/card'
 import { RevolvingCards } from '../card/revolving-card'
 import { CardPickupIcon } from '../icons/CardPickupIcon'
-import { Avatar, AvatarImage } from '../ui/avatar'
+import { Avatar, AvatarFallback } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Notes } from './notes'
 
@@ -87,7 +88,14 @@ export function PickEntryButton({ session, room }: Props) {
                   ref={card.id === pickedEntry?.id ? cardsRef : null}
                   isShown={firstPick.value || card.id === pickedEntry?.id}
                   front={
-                    <div className='flex h-full w-full flex-col p-4'>
+                    <div className='relative flex h-full w-full flex-col overflow-hidden rounded-[inherit] p-4'>
+                      <Image
+                        className='absolute left-0 top-0 h-full w-full object-cover opacity-20 blur-lg'
+                        src={card.user.image as string}
+                        width={80}
+                        height={80}
+                        alt={`${card.user.name}'s avatar`}
+                      />
                       <span
                         className={cn('opacity-0 transition-opacity', {
                           'opacity-80': showNotes.value && card.id === pickedEntry?.id,
@@ -97,7 +105,13 @@ export function PickEntryButton({ session, room }: Props) {
                       </span>
                       <div className='flex h-full flex-col items-center justify-center gap-2'>
                         <Avatar className='size-20'>
-                          <AvatarImage src={card.user.image!} />
+                          <Image
+                            src={card.user.image as string}
+                            width={80}
+                            height={80}
+                            alt={`${card.user.name}'s avatar`}
+                          />
+                          <AvatarFallback>{card.user.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <span>{card.user.name}</span>
                       </div>
