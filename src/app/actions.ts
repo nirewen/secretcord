@@ -1,7 +1,8 @@
 'use server'
 
 import { CreateRoomValues } from '@/components/room/create-room'
-import { JoinRoomValues } from '@/components/room/join-room'
+import { EditEntryValues } from '@/components/room/form/edit-form'
+import { JoinRoomValues } from '@/components/room/form/join-form'
 import { UpdateRoomValues } from '@/components/room/room-options'
 import { auth } from '@/lib/auth'
 import { findPickedEntry, isActionError, userIsInRoom } from '@/lib/utils'
@@ -219,6 +220,33 @@ export async function joinRoom(values: JoinRoomValues) {
   })
 
   revalidatePath(`/room/${values.roomId}`)
+}
+
+export async function editEntry(values: EditEntryValues) {
+  const result = await getSession()
+
+  if (result.error) {
+    return result
+  }
+
+  const session = result.data!
+
+  const entry = await prisma.entry.findFirst({
+    where: {
+      id: values.entryId,
+    },
+  })
+
+  if (!entry) {
+    return { error: 'User is not in the room' }
+  }
+
+  await prisma.entry.update({
+    where: { id: values.entryId },
+    data: {
+      notes: values.notes,
+    },
+  })
 }
 
 export async function leaveRoom(roomId: string) {
