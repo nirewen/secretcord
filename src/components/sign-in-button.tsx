@@ -12,8 +12,9 @@ export function SignInButton() {
   }
 
   return (
-    <Button size='icon' onClick={signIn}>
+    <Button onClick={signIn}>
       <LogInIcon />
+      Login with Discord
     </Button>
   )
 }
