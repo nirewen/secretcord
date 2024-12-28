@@ -247,6 +247,8 @@ export async function editEntry(values: EditEntryValues) {
       notes: values.notes,
     },
   })
+
+  revalidatePath(`/room/${entry.roomId}`)
 }
 
 export async function leaveRoom(roomId: string) {

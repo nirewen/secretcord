@@ -46,8 +46,6 @@ export function EditEntryForm({ state, entry }: Props) {
       })
     }
 
-    form.reset()
-
     state.setFalse()
   }
 
