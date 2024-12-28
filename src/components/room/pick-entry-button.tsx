@@ -131,7 +131,11 @@ export function PickEntryButton({ session, room }: Props) {
                           <span>Notes</span>
                           <small className='text-[10px] opacity-80'>These are notes on how to give your gift</small>
                         </div>
-                        <Notes className='w-full border-none bg-transparent' markdown={card.notes} />
+                        <Notes
+                          className='w-full border-none bg-transparent'
+                          markdownClassName='text-[10px]'
+                          markdown={card.notes}
+                        />
                       </Show>
                     </div>
                   }

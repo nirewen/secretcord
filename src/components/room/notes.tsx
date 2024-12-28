@@ -4,6 +4,7 @@ import { autoLinkMd } from 'react-markdown-autolink'
 
 type Props = {
   className?: string
+  markdownClassName?: string
   markdown: string
 }
 
@@ -15,10 +16,13 @@ function LinkRenderer(props: any) {
   )
 }
 
-export function Notes({ className, markdown }: Props) {
+export function Notes({ className, markdownClassName, markdown }: Props) {
   return (
     <div className={cn('rounded-md border border-neutral-900 bg-neutral-800 p-2 overflow-x-auto', className)}>
-      <ReactMarkdown className='prose prose-sm prose-invert break-words' components={{ a: LinkRenderer }}>
+      <ReactMarkdown
+        className={cn('prose prose-sm prose-invert break-words', markdownClassName)}
+        components={{ a: LinkRenderer }}
+      >
         {autoLinkMd(markdown)}
       </ReactMarkdown>
     </div>
