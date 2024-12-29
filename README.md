@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SecretCord
 
-## Getting Started
+[SecretCord](https://sc.nirewen.dev) is a way to have a Discord Secret Santa
 
-First, run the development server:
+> Create a room and ask your friends to join
+>
+> Add notes and rules to the game
+>
+> Then, close the room so no one can join anymore
+>
+> And have the website pick an entry automatically
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- The entry is picked on demand, meaning it's only picked when the button is pressed
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- The pick is completely random, the only check is for the current user
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- No one can see your notes except the user who picked your entry
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Screenshots
 
-## Learn More
+|           Homepage            |
+| :---------------------------: |
+| ![Home page](assets/home.png) |
 
-To learn more about Next.js, take a look at the following resources:
+|           Room page           |
+| :---------------------------: |
+| ![Room page](assets/room.png) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+|            View picked entry             |
+| :--------------------------------------: |
+| ![Picked entry](assets/picked-entry.png) |
