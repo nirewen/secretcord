@@ -92,7 +92,7 @@ export default async function RoomPage({ params }: Props) {
       <Show when={!!room.notes}>
         <Notes className='max-h-48' markdown={room.notes} />
       </Show>
-      <div className='grid grid-cols-[1fr_4fr] gap-2'>
+      <div className='grid grid-cols-[1fr_2fr_2fr] gap-2'>
         <div className='flex items-center justify-center gap-2 rounded-md bg-neutral-800'>
           <Users2Icon className='size-4' />
           {room.entries.length}

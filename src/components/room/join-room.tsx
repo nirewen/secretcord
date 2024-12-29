@@ -11,6 +11,7 @@ import { leaveRoom } from '@/app/actions'
 import type { Session } from '@/lib/auth'
 import { isActionError, userIsInRoom } from '@/lib/utils'
 
+import { Show } from 'react-flow-control'
 import { EditEntry } from './edit-entry'
 import { JoinForm } from './form/join-form'
 
@@ -42,27 +43,29 @@ export function JoinRoom({ session, room }: Props) {
     }
   }
 
+  if (userEntry) {
+    return (
+      <>
+        <EditEntry entry={userEntry} />
+        <Show when={!room.closedAt}>
+          <Button variant='destructive' onClick={onLeave}>
+            <LogOutIcon /> Leave
+          </Button>
+        </Show>
+      </>
+    )
+  }
+
   if (room.closedAt) {
     if (!userIsInRoom(room, session?.user.id)) {
       return (
-        <Button variant='default' disabled>
+        <Button className='col-span-2' variant='default' disabled>
           <LogInIcon /> Join room
         </Button>
       )
     } else {
       return null
     }
-  }
-
-  if (userEntry) {
-    return (
-      <div className='flex gap-2'>
-        <EditEntry entry={userEntry} />
-        <Button variant='destructive' onClick={onLeave}>
-          <LogOutIcon /> Leave
-        </Button>
-      </div>
-    )
   }
 
   return (
