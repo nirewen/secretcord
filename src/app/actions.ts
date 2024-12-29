@@ -314,7 +314,7 @@ export async function pickEntry(roomId: string) {
     return { error: 'User is not in room' }
   }
 
-  const validEntries = room.entries.filter(entry => entry.userId !== session.user.id)
+  const validEntries = room.entries.filter(entry => entry.userId !== session.user.id && !entry.pickedById)
   const alreadyPicked = findPickedEntry(validEntries, session.user.id)
 
   if (alreadyPicked) {
