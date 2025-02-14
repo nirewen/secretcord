@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -19,6 +19,8 @@ model Room {
   updatedAt DateTime  @updatedAt
   closedAt  DateTime?
   entries   Entry[]
+
+  @@map("room")
 }
 
 model Entry {
@@ -32,6 +34,8 @@ model Entry {
   room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@map("entry")
 }
 
 model User {

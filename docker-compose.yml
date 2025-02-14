@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     networks:
       - proxy
+      - postgres
     volumes:
       - ./prisma:/app/prisma
     labels:
@@ -17,4 +18,6 @@ services:
 
 networks:
   proxy:
+    external: true
+  postgres:
     external: true
